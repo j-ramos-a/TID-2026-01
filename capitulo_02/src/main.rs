@@ -15,7 +15,6 @@ fn main() {
         return;
     }
 
-    // 2. Declaramos `guess` en el ámbito principal de main()
     let guess: u32 = match guess.trim().parse() {
         Ok(adivinado) => adivinado,
         Err(_) => {
