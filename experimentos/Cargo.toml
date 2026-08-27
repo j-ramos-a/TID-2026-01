@@ -1,0 +1,9 @@
+[package]
+name = "experimentos"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "mi_proyecto"        
+path = "src/Structs_hashmaps.rs"         
+[dependencies]
