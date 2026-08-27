@@ -17,3 +17,9 @@ Tambien desarrolle los rutlings respectivos.
 - Terminar capitulo 4 del libro
 - Desarrollar un ejercicios utilizando structs e implementaciones en rust, a través de un ejercicio de recepción de vectores.
 - Desarrollar tres programas mas entorno a las instrucciones del profesor para los experimentos.
+
+# Segunda semana:
+##Que es move, borrowing, referencias mutables y slice?
+
+Primero debemos considerar que rust es un lenguaje que maneja en tiempo de compilación la liberación y manejo de la memoria, por lo que mantiene varias medidas de seguridad y anti-ambiguedad para lograrlo.
+- 
