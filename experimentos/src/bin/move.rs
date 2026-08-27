@@ -5,7 +5,7 @@ fn construir_correo(usuario: String, dominio: &str) -> String {
 }
 fn main() {
     let nombre_usuario = String::from("joaquin.ramos");
-    let correo_final = construir_correo(nombre_usuario, "facultad.cl");
+    let correo_final = construir_correo(nombre_usuario, "@uai.cl");
 
     println!("Correo asignado: {correo_final}");
 
