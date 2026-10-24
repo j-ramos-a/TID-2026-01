@@ -1,0 +1,31 @@
+{
+  "name": "pagina",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hardhat.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
+    "deploy:local": "npx hardhat run scripts/deploy.js --network hardhat",
+    "upgrade:sepolia": "npx hardhat run scripts/upgrade_to_v2.js --network sepolia",
+    "relayer": "node relayer/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.6.1",
+    "@openzeppelin/hardhat-upgrades": "^3.9.1",
+    "dotenv": "^18.0.8",
+    "hardhat": "^2.29.1"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0"
+  }
+}
