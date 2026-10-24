@@ -6,11 +6,9 @@ interface IPrizePool {
 }
 
 contract ArcadeMachine {
-    // Custom Errors (Optimización de gas)
     error NotOwner();
     error NotEnoughEth();
 
-    // Variables de estado
     address public owner;
     uint256 public playPrice;
     uint256 public totalGames;
@@ -19,13 +17,11 @@ contract ArcadeMachine {
     mapping(address => uint256) public highScores;
     mapping(address => string) public nickname;
 
-    // Eventos
     event GamePlayed(address indexed player, uint256 score);
     event NewChampion(address indexed player, uint256 score);
     event PrizeDepositSuccess(uint256 amount);
     event PrizeDepositFailed(uint256 amount);
 
-    // Modificador de acceso
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwner();
         _;
@@ -54,7 +50,6 @@ contract ArcadeMachine {
 
         totalGames += 1;
 
-        // Cacheo de lectura de storage
         uint256 currentScore = highScores[msg.sender];
         if (score > currentScore) {
             highScores[msg.sender] = score;
