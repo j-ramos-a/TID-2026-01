@@ -44,7 +44,9 @@ typechain-types/
 # ── 4. FRONTEND (Vite / React) ───────────────────────────────
 # Carpeta de build para producción generada por "npm run build"
 dist/
+**/dist/
 frontend/dist/
+Plataforma final(V2)/frontend/dist/
 dist-ssr/
 frontend/dist-ssr/
 *.local
