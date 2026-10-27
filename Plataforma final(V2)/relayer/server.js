@@ -39,7 +39,7 @@ function computeIpfsCid(content) {
   return output;
 }
 
-const PORT = process.env.RELAYER_PORT || 3001;
+const PORT = process.env.PORT || process.env.RELAYER_PORT || 3001;
 const RPC_URL = process.env.SEPOLIA_RPC_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
