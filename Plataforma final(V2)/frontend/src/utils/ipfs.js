@@ -12,10 +12,7 @@
 
 const memoryCache = new Map();
 const RELAYER_URL =
-  import.meta.env.VITE_RELAYER_URL ||
-  (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? `http://${window.location.hostname}:3001`
-    : 'http://localhost:3001');
+  import.meta.env.VITE_RELAYER_URL || 'https://tid-2026-01.onrender.com';
 
 /**
  * Genera un CIDv1 en base32 (raw sha256 multihash) compatible con IPFS usando Web Crypto.
