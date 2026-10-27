@@ -39,6 +39,7 @@ export default function AskModal({ onClose, onSuccess }) {
 
   const isSubmitting =
     txStatus === 'signing' || txStatus === 'relaying' || txStatus === 'confirming';
+  const isLocked = isSubmitting || txStatus === 'success';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
@@ -101,7 +102,7 @@ export default function AskModal({ onClose, onSuccess }) {
                       ? 'border-rose-500/50 focus:border-rose-500/50 focus:ring-rose-500/20'
                       : ''
                   }`}
-                  disabled={isSubmitting}
+                  disabled={isLocked}
                   maxLength={200}
                 />
                 <div className="flex items-center justify-between mt-1.5">
@@ -130,7 +131,7 @@ export default function AskModal({ onClose, onSuccess }) {
                       ? 'border-rose-500/50 focus:border-rose-500/50 focus:ring-rose-500/20'
                       : ''
                   }`}
-                  disabled={isSubmitting}
+                  disabled={isLocked}
                 />
                 <div className="flex flex-wrap items-center justify-between gap-1.5 mt-2">
                   {content.trim().length >= 100 ? (
