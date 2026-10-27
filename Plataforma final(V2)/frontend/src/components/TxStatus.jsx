@@ -22,7 +22,7 @@ export default function TxStatus({ txStatus, txError, txInfo, onDismiss }) {
       border: 'border-indigo-500/30',
       bg: 'bg-indigo-500/[0.08]',
       iconBg: 'bg-indigo-500/15 text-indigo-400',
-      message: 'Tu petición está siendo patrocinada y minada en Sepolia...',
+      message: 'Tu petición está siendo patrocinada y validada en Sepolia...',
       sub: 'El relayer está enviando la transacción y pagando el gas en tu nombre.',
     },
     confirming: {
@@ -30,7 +30,7 @@ export default function TxStatus({ txStatus, txError, txInfo, onDismiss }) {
       border: 'border-indigo-500/30',
       bg: 'bg-indigo-500/[0.06]',
       iconBg: 'bg-indigo-500/10 text-indigo-400',
-      message: 'Minando bloque en Sepolia...',
+      message: 'Validando bloque en Sepolia...',
       sub: 'Esperando confirmación del bloque en la red Ethereum.',
     },
     success: {

@@ -21,9 +21,7 @@ export default function AnswerForm({ questionId, onSuccess }) {
     try {
       await answerQuestion(questionId, content.trim());
       setContent('');
-      setTimeout(() => {
-        onSuccess?.();
-      }, 2500);
+      onSuccess?.();
     } catch {
       // Handled by txStatus
     }
@@ -120,7 +118,7 @@ export default function AnswerForm({ questionId, onSuccess }) {
               ? txStatus === 'relaying'
                 ? 'Patrocinando en Sepolia...'
                 : txStatus === 'confirming'
-                ? 'Minando bloque...'
+                ? 'Validando bloque...'
                 : 'Firmando (0 Gas)...'
               : 'Publicar Respuesta (0 Gas)'}
           </span>

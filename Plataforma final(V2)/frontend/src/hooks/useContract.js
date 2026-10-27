@@ -211,7 +211,7 @@ export function useContract() {
 
       // 3. Enviar la meta-transacción firmada al Relayer local
       setTxStatus('relaying');
-      console.log('🚀 Enviando firma al relayer para patrocinio y minado en Sepolia...');
+      console.log('🚀 Enviando firma al relayer para patrocinio y validación en Sepolia...');
 
       const relayResponse = await fetch(`${RELAYER_URL}/api/relay`, {
         method: 'POST',

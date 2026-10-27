@@ -20,16 +20,18 @@ export default function AskModal({ onClose, onSuccess }) {
     return Object.keys(e).length === 0;
   };
 
+  const handleClose = () => {
+    resetTx();
+    onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     try {
       await askQuestion(title.trim(), content.trim());
-      setTimeout(() => {
-        onSuccess?.();
-        onClose();
-      }, 2500);
+      onSuccess?.();
     } catch {
       // Error manejado por txStatus/txError
     }
@@ -42,7 +44,7 @@ export default function AskModal({ onClose, onSuccess }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={!isSubmitting ? onClose : undefined}
+        onClick={!isSubmitting ? handleClose : undefined}
       />
 
       <div className="relative glass-card w-full max-w-xl z-10 animate-slide-up overflow-hidden">
@@ -51,7 +53,7 @@ export default function AskModal({ onClose, onSuccess }) {
 
         <div className="p-6">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             disabled={isSubmitting}
             className="absolute top-5 right-5 text-slate-600 hover:text-slate-300 transition-colors disabled:opacity-30"
           >
@@ -160,21 +162,27 @@ export default function AskModal({ onClose, onSuccess }) {
               <div className="flex justify-end gap-3 pt-1">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   disabled={isSubmitting}
                   className="btn-ghost text-slate-400"
                 >
-                  Cancelar
+                  {txStatus === 'success' ? 'Cerrar' : 'Cancelar'}
                 </button>
-                <button type="submit" disabled={isSubmitting} className="btn-primary">
+                <button
+                  type="submit"
+                  disabled={isSubmitting || txStatus === 'success'}
+                  className="btn-primary"
+                >
                   <Send size={15} />
                   <span>
                     {isSubmitting
                       ? txStatus === 'relaying'
                         ? 'Patrocinando en Sepolia...'
                         : txStatus === 'confirming'
-                        ? 'Minando bloque...'
+                        ? 'Validando bloque...'
                         : 'Firmando (0 Gas)...'
+                      : txStatus === 'success'
+                      ? 'Publicada con éxito'
                       : 'Publicar Consulta (0 Gas)'}
                   </span>
                 </button>
