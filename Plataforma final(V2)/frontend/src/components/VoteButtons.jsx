@@ -64,7 +64,7 @@ export default function VoteButtons({ answerId, authorAddress, likes, dislikes, 
         disabled={!account || isOwnAnswer || voting}
         className={`flex flex-col items-center justify-center w-11 h-12 rounded-xl transition-all duration-200 group active:scale-90 ${
           isOwnAnswer
-            ? 'opacity-30 cursor-not-allowed text-slate-600'
+            ? 'cursor-not-allowed text-slate-400'
             : currentVote === 1
             ? 'bg-emerald-950/50 text-emerald-400 border border-emerald-500/30 shadow-sm shadow-emerald-500/10'
             : 'text-slate-400 hover:text-emerald-400 hover:bg-emerald-950/30'
@@ -100,7 +100,7 @@ export default function VoteButtons({ answerId, authorAddress, likes, dislikes, 
         disabled={!account || isOwnAnswer || voting}
         className={`flex flex-col items-center justify-center w-11 h-12 rounded-xl transition-all duration-200 group active:scale-90 ${
           isOwnAnswer
-            ? 'opacity-30 cursor-not-allowed text-slate-600'
+            ? 'cursor-not-allowed text-slate-400'
             : currentVote === 2
             ? 'bg-rose-950/50 text-rose-400 border border-rose-500/30 shadow-sm shadow-rose-500/10'
             : 'text-slate-400 hover:text-rose-400 hover:bg-rose-950/30'
