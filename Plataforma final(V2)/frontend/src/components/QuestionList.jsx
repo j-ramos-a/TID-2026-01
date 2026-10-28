@@ -13,7 +13,17 @@ export default function QuestionList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState(null);
   const [showAskModal, setShowAskModal] = useState(false);
+
+  const CATEGORY_TABS = [
+    { label: 'Todas', value: null },
+    { label: 'Cálculo', value: 0 },
+    { label: 'Álgebra', value: 1 },
+    { label: 'Programación', value: 2 },
+    { label: 'Core', value: 3 },
+    { label: 'Otros', value: 4 },
+  ];
 
   const loadQuestions = useCallback(async () => {
     setLoading(true);
@@ -49,13 +59,18 @@ export default function QuestionList() {
     loadQuestions();
   }, [loadQuestions]);
 
-  // Filtrar por búsqueda
+  // Filtrar por categoría y búsqueda
+  const categoryFiltered =
+    activeCategory === null
+      ? questions
+      : questions.filter((q) => q.category === activeCategory);
+
   const filtered = search.trim()
-    ? questions.filter((q) =>
+    ? categoryFiltered.filter((q) =>
         q.title.toLowerCase().includes(search.toLowerCase()) ||
         q.content.toLowerCase().includes(search.toLowerCase())
       )
-    : questions;
+    : categoryFiltered;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -92,6 +107,23 @@ export default function QuestionList() {
 
       {/* ── Panel de Estadísticas Rápidas ── */}
       <StatsBar />
+
+      {/* ── Filtro por Categoría ── */}
+      <div className="flex flex-wrap gap-2">
+        {CATEGORY_TABS.map((tab) => (
+          <button
+            key={tab.label}
+            onClick={() => setActiveCategory(tab.value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              activeCategory === tab.value
+                ? 'bg-indigo-600 text-white border-indigo-500'
+                : 'bg-slate-800/60 text-slate-300 border-slate-700/60 hover:border-indigo-500/40'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
       {/* ── Filtros y Búsqueda ── */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">

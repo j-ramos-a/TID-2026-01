@@ -8,6 +8,16 @@ import {
   getAvatarInitials,
 } from '../utils/formatters';
 
+
+const CATEGORY_LABELS = ['Cálculo', 'Álgebra', 'Programación', 'Core', 'Otros'];
+const CATEGORY_COLORS = [
+  'bg-blue-500/10 text-blue-300 border-blue-500/20',
+  'bg-purple-500/10 text-purple-300 border-purple-500/20',
+  'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+  'bg-amber-500/10 text-amber-300 border-amber-500/20',
+  'bg-slate-500/10 text-slate-300 border-slate-500/20',
+];
+
 export default function QuestionCard({ question }) {
   const navigate = useNavigate();
   const avatar = getAvatarStyle(question.author);
@@ -55,6 +65,13 @@ export default function QuestionCard({ question }) {
               >
                 <Database size={9} />
                 <span>IPFS</span>
+              </span>
+            )}
+            {question.category !== undefined && question.category !== null && (
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${CATEGORY_COLORS[question.category] || CATEGORY_COLORS[4]}`}
+              >
+                {CATEGORY_LABELS[question.category] || 'Otros'}
               </span>
             )}
           </div>

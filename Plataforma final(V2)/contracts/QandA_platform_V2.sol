@@ -88,7 +88,7 @@ contract QandA_platform_V2 is QandA_platform, ERC2771ContextUpgradeable {
     /**
      * @notice Crea una nueva pregunta optimizando escrituras a almacenamiento.
      */
-    function askQuestion(string calldata title, string calldata content) external override returns (uint256) {
+    function askQuestion(string calldata title, string calldata content, Category category) external override returns (uint256) {
         if (bytes(title).length == 0) revert EmptyTitle();
         if (bytes(content).length == 0) revert EmptyContent();
 
@@ -106,9 +106,10 @@ contract QandA_platform_V2 is QandA_platform, ERC2771ContextUpgradeable {
         q.author = sender;
         q.title = title;
         q.content = content;
+        q.category = category;
         q.timestamp = currentTime;
 
-        emit QuestionCreated(newId, sender, title, currentTime);
+        emit QuestionCreated(newId, sender, title, category, currentTime);
         return newId;
     }
 
@@ -234,12 +235,13 @@ contract QandA_platform_V2 is QandA_platform, ERC2771ContextUpgradeable {
         address author,
         string memory title,
         string memory content,
+        Category category,
         uint256 timestamp,
         uint256[] memory answerIds
     ) {
         question storage q = questions[question_id];
         if (q.author == address(0)) revert QuestionNotFound();
 
-        return (q.id, q.author, q.title, q.content, q.timestamp, q.answers_id);
+        return (q.id, q.author, q.title, q.content, q.category, q.timestamp, q.answers_id);
     }
 }

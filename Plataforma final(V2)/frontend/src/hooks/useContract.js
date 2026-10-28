@@ -49,6 +49,7 @@ export function useContract() {
       title: q.title,
       content: resolvedContent,
       rawContent: q.content,
+      category: Number(q.category),
       isIpfs: isIpfs,
       cid: isIpfs ? extractCid(q.content) : null,
       timestamp: Number(q.timestamp),
@@ -253,7 +254,7 @@ export function useContract() {
 
   // ── Funciones de negocio: Optimizadas con IPFS y Meta-Transacciones ──
 
-  const askQuestion = useCallback(async (title, content, options = {}) => {
+  const askQuestion = useCallback(async (title, content, category = 0, options = {}) => {
     // Optimización Gas: Almacenar textos largos (>= 100 caracteres) en IPFS
     const offChainResult = await storeContentOffChain(content);
     const contentPayload = offChainResult.content;
@@ -263,9 +264,9 @@ export function useContract() {
     }
 
     if (options.direct || !contractData?.forwarderAddress) {
-      return executeDirectTx((c) => c.askQuestion(title, contentPayload));
+      return executeDirectTx((c) => c.askQuestion(title, contentPayload, category));
     }
-    return executeGaslessTx("askQuestion", [title, contentPayload]);
+    return executeGaslessTx("askQuestion", [title, contentPayload, category]);
   }, [executeGaslessTx, executeDirectTx, contractData]);
 
   const answerQuestion = useCallback(async (questionId, content, options = {}) => {

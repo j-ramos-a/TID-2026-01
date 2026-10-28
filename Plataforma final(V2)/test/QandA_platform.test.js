@@ -41,10 +41,10 @@ describe("QandA_platform (UUPS Proxy)", function () {
   describe("Preguntas", function () {
     it("Debe crear una pregunta correctamente", async function () {
       await expect(
-        qanda.connect(user1).askQuestion("¿Qué es Solidity?", "Quiero aprender Solidity.")
+        qanda.connect(user1).askQuestion("¿Qué es Solidity?", "Quiero aprender Solidity.", 0)
       )
         .to.emit(qanda, "QuestionCreated")
-        .withArgs(1, await user1.getAddress(), "¿Qué es Solidity?", (ts) => ts > 0);
+        .withArgs(1, await user1.getAddress(), "¿Qué es Solidity?", 0, (ts) => ts > 0);
 
       expect(await qanda.questionCount()).to.equal(1);
 
@@ -54,15 +54,28 @@ describe("QandA_platform (UUPS Proxy)", function () {
       expect(q.title).to.equal("¿Qué es Solidity?");
     });
 
+    it("Debe guardar y recuperar la categoría seleccionada", async function () {
+      await qanda.connect(user1).askQuestion("Pregunta cat", "Contenido cat", 2); // 2 = Programacion
+
+      const q = await qanda.getQuestion(1);
+      expect(Number(q.category)).to.equal(2);
+
+      await expect(
+        qanda.connect(user1).askQuestion("Pregunta cat2", "Contenido cat2", 4)
+      )
+        .to.emit(qanda, "QuestionCreated")
+        .withArgs(2, await user1.getAddress(), "Pregunta cat2", 4, (ts) => ts > 0);
+    });
+
     it("Debe revertir con título vacío", async function () {
       await expect(
-        qanda.connect(user1).askQuestion("", "contenido")
+        qanda.connect(user1).askQuestion("", "contenido", 0)
       ).to.be.revertedWithCustomError(qanda, "EmptyTitle");
     });
 
     it("Debe revertir con contenido vacío", async function () {
       await expect(
-        qanda.connect(user1).askQuestion("titulo", "")
+        qanda.connect(user1).askQuestion("titulo", "", 0)
       ).to.be.revertedWithCustomError(qanda, "EmptyContent");
     });
 
@@ -75,7 +88,7 @@ describe("QandA_platform (UUPS Proxy)", function () {
 
   describe("Respuestas", function () {
     beforeEach(async function () {
-      await qanda.connect(user1).askQuestion("Pregunta 1", "Contenido 1");
+      await qanda.connect(user1).askQuestion("Pregunta 1", "Contenido 1", 0);
     });
 
     it("Debe crear una respuesta correctamente", async function () {
@@ -113,7 +126,7 @@ describe("QandA_platform (UUPS Proxy)", function () {
 
   describe("Votos", function () {
     beforeEach(async function () {
-      await qanda.connect(user1).askQuestion("Pregunta 1", "Contenido 1");
+      await qanda.connect(user1).askQuestion("Pregunta 1", "Contenido 1", 0);
       await qanda.connect(user2).answerQuestion(1, "Respuesta 1");
     });
 

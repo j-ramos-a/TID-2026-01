@@ -10,11 +10,15 @@ contract QandA_platform is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     uint256 public questionCount; 
     uint256 public answerCount;
 
+    enum Category { Calculo, Algebra, Programacion, Core, Otros }
+    enum vote { None, like, dislike }
+
     struct question {
         uint256 id;
         address author;
         string title;
         string content;
+        Category category;
         uint256 timestamp;
         uint256[] answers_id;
     }
@@ -34,8 +38,6 @@ contract QandA_platform is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         uint256 received_dislikes;
     }
 
-    enum vote { None, like, dislike }
-
     mapping(uint256 => answer) public answers;
     mapping(uint256 => question) public questions;
     mapping(address => user_data) public users;
@@ -43,7 +45,7 @@ contract QandA_platform is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     // --- EVENTOS Y ERRORES ---
     event AnswerVoted(uint256 indexed answerId, address indexed voter, vote voteType, address indexed answerAuthor);
-    event QuestionCreated(uint256 indexed questionId, address indexed author, string title, uint256 timestamp);
+    event QuestionCreated(uint256 indexed questionId, address indexed author, string title, Category category, uint256 timestamp);
     event AnswerCreated(uint256 indexed answerId, uint256 indexed questionId, address indexed author, uint256 timestamp);
 
     error InvalidVote();
@@ -107,7 +109,7 @@ contract QandA_platform is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         emit AnswerVoted(id_answer, msg.sender, new_vote, currentAnswer.author);
     }
 
-    function askQuestion(string calldata title, string calldata content) external virtual returns (uint256) {
+    function askQuestion(string calldata title, string calldata content, Category category) external virtual returns (uint256) {
         if (bytes(title).length == 0) revert EmptyTitle();
         if (bytes(content).length == 0) revert EmptyContent();
 
@@ -119,9 +121,10 @@ contract QandA_platform is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         q.author = msg.sender;
         q.title = title;
         q.content = content;
+        q.category = category;
         q.timestamp = block.timestamp;
 
-        emit QuestionCreated(newId, msg.sender, title, block.timestamp);
+        emit QuestionCreated(newId, msg.sender, title, category, block.timestamp);
         return newId;
     }
 
@@ -150,13 +153,14 @@ contract QandA_platform is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         address author,
         string memory title,
         string memory content,
+        Category category,
         uint256 timestamp,
         uint256[] memory answerIds
     ) {
         question storage q = questions[question_id];
         if (q.author == address(0)) revert QuestionNotFound();
 
-        return (q.id, q.author, q.title, q.content, q.timestamp, q.answers_id);
+        return (q.id, q.author, q.title, q.content, q.category, q.timestamp, q.answers_id);
     }
 
     function getAnswersForQuestion(uint256 question_id) external view virtual returns (answer[] memory) {

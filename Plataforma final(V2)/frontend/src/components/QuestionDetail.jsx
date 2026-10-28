@@ -22,6 +22,16 @@ import {
 import VoteButtons from './VoteButtons';
 import AnswerForm from './AnswerForm';
 
+
+const CATEGORY_LABELS = ['Cálculo', 'Álgebra', 'Programación', 'Core', 'Otros'];
+const CATEGORY_COLORS = [
+  'bg-blue-500/10 text-blue-300 border-blue-500/20',
+  'bg-purple-500/10 text-purple-300 border-purple-500/20',
+  'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+  'bg-amber-500/10 text-amber-300 border-amber-500/20',
+  'bg-slate-500/10 text-slate-300 border-slate-500/20',
+];
+
 export default function QuestionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -153,6 +163,11 @@ export default function QuestionDetail() {
             <span className="px-2.5 py-1 rounded-lg text-xs font-mono bg-slate-800 text-slate-400 border border-slate-700/50">
               ID #{question.id}
             </span>
+            {question.category !== undefined && question.category !== null && (
+              <span className={`px-2.5 py-1 rounded-lg text-xs font-medium border ${CATEGORY_COLORS[question.category] || CATEGORY_COLORS[4]}`}>
+                {CATEGORY_LABELS[question.category] || 'Otros'}
+              </span>
+            )}
             {question.isIpfs && (
               <a
                 href={

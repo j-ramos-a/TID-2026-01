@@ -9,12 +9,22 @@ export default function AskModal({ onClose, onSuccess }) {
   const { askQuestion, txStatus, txError, txInfo, resetTx, hasForwarder } = useContract();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [category, setCategory] = useState(null);
   const [errors, setErrors] = useState({});
+
+  const CATEGORIES = [
+    { value: 0, label: 'Cálculo' },
+    { value: 1, label: 'Álgebra' },
+    { value: 2, label: 'Programación' },
+    { value: 3, label: 'Core' },
+    { value: 4, label: 'Otros' },
+  ];
 
   const validate = () => {
     const e = {};
     if (!title.trim()) e.title = 'El título es obligatorio.';
     if (!content.trim()) e.content = 'El contenido es obligatorio.';
+    if (category === null) e.category = 'Selecciona una categoría.';
     if (title.trim().length > 200) e.title = 'Máximo 200 caracteres.';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -30,7 +40,7 @@ export default function AskModal({ onClose, onSuccess }) {
     if (!validate()) return;
 
     try {
-      await askQuestion(title.trim(), content.trim());
+      await askQuestion(title.trim(), content.trim(), category);
       onSuccess?.();
     } catch {
       // Error manejado por txStatus/txError
@@ -113,6 +123,34 @@ export default function AskModal({ onClose, onSuccess }) {
                   )}
                   <span className="text-xs text-slate-600">{title.length}/200</span>
                 </div>
+              </div>
+
+              {/* Categoría */}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Categoría</label>
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.value}
+                      type="button"
+                      disabled={isLocked}
+                      onClick={() => {
+                        setCategory(cat.value);
+                        setErrors((p) => ({ ...p, category: undefined }));
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        category === cat.value
+                          ? 'bg-indigo-600 text-white border-indigo-500'
+                          : 'bg-slate-800/60 text-slate-300 border-slate-700/60 hover:border-indigo-500/40'
+                      } disabled:opacity-40`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+                {errors.category && (
+                  <p className="text-rose-400 text-xs mt-1.5">{errors.category}</p>
+                )}
               </div>
 
               {/* Contenido */}

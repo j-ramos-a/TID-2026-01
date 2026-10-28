@@ -1,26 +1,29 @@
 // scripts/deploy.js
 // ============================================================
-// Despliegue UUPS Proxy del contrato QandA_platform en Sepolia
+// Despliegue UUPS Proxy NUEVO (storage limpio) de QandA_platform_V2
+// en Sepolia, reutilizando el ComSCiForwarder existente.
 // ============================================================
 const { ethers, upgrades, network } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
 
+// Forwarder EIP-2771 existente en Sepolia (reutilizado)
+const FORWARDER_ADDRESS = "0x9f0F92eF187c7b965ff6D3a85Ff62F53F4F2B78A";
+
 async function main() {
-  // ── 1. Obtener la cuenta desplegadora ──────────────────────
   const [deployer] = await ethers.getSigners();
   const deployerAddress = await deployer.getAddress();
 
   console.log("═══════════════════════════════════════════════════════");
-  console.log("  🚀  Desplegando QandA_platform (UUPS Proxy)");
+  console.log("  🚀  Desplegando NUEVO Proxy QandA_platform_V2 (storage limpio)");
   console.log("═══════════════════════════════════════════════════════");
   console.log(`  Red:       ${network.name}`);
   console.log(`  Chain ID:  ${network.config.chainId ?? (await ethers.provider.getNetwork()).chainId}`);
   console.log(`  Deployer:  ${deployerAddress}`);
+  console.log(`  Forwarder: ${FORWARDER_ADDRESS}`);
 
   const balanceWei = await ethers.provider.getBalance(deployerAddress);
-  const balanceEth = ethers.formatEther(balanceWei);
-  console.log(`  Balance:   ${balanceEth} ETH`);
+  console.log(`  Balance:   ${ethers.formatEther(balanceWei)} ETH`);
   console.log("═══════════════════════════════════════════════════════\n");
 
   if (balanceWei === 0n) {
@@ -29,24 +32,29 @@ async function main() {
     );
   }
 
-  // ── 2. Desplegar con upgrades.deployProxy (UUPS) ──────────
-  const QandA = await ethers.getContractFactory("QandA_platform");
+  // ── 1. Desplegar nuevo proxy UUPS con implementación V2 ──
+  const QandA_V2 = await ethers.getContractFactory("QandA_platform_V2");
 
-  console.log("⏳ Desplegando proxy ERC1967 + implementación...\n");
+  console.log("⏳ Desplegando nuevo proxy ERC1967 + implementación V2...\n");
 
-  const proxy = await upgrades.deployProxy(QandA, [deployerAddress], {
+  const proxy = await upgrades.deployProxy(QandA_V2, [deployerAddress], {
     initializer: "initialize",
     kind: "uups",
+    constructorArgs: [FORWARDER_ADDRESS],
   });
 
   await proxy.waitForDeployment();
 
-  // ── 3. Recopilar información del despliegue ───────────────
   const proxyAddress = await proxy.getAddress();
+
+  // Configurar trusted forwarder en storage (initializeV2) para compatibilidad
+  console.log("⏳ Configurando trusted forwarder (initializeV2)...\n");
+  const txInitV2 = await proxy.initializeV2(FORWARDER_ADDRESS);
+  await txInitV2.wait();
+
   const implementationAddress =
     await upgrades.erc1967.getImplementationAddress(proxyAddress);
 
-  // Obtener hash de la transacción de despliegue y bloque
   const deployTx = proxy.deploymentTransaction();
   const deployTxHash = deployTx ? deployTx.hash : "N/A";
   let deploymentBlock = "N/A";
@@ -62,38 +70,49 @@ async function main() {
 
   const deployedAt = new Date().toISOString();
 
-  // ── 4. Obtener el ABI del contrato compilado ──────────────
-  const artifactPath = path.join(
+  // ── 2. Cargar ABIs compilados ─────────────────────────────
+  const v2ArtifactPath = path.join(
     __dirname,
     "..",
     "artifacts",
     "contracts",
-    "Plataforma_Pagina.sol",
-    "QandA_platform.json"
+    "QandA_platform_V2.sol",
+    "QandA_platform_V2.json"
   );
-  const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf8"));
-  const abi = artifact.abi;
+  const v2Artifact = JSON.parse(fs.readFileSync(v2ArtifactPath, "utf8"));
+  const abi = v2Artifact.abi;
 
-  // ── 5. Exportar contractData.json para el frontend ────────
+  const forwarderArtifactPath = path.join(
+    __dirname,
+    "..",
+    "artifacts",
+    "contracts",
+    "ComSCiForwarder.sol",
+    "ComSCiForwarder.json"
+  );
+  const forwarderArtifact = JSON.parse(
+    fs.readFileSync(forwarderArtifactPath, "utf8")
+  );
+
+  // ── 3. Exportar contractData.json para el frontend ────────
   const contractData = {
     network: network.name,
     chainId,
+    version: "2.0.0",
     proxyAddress,
     implementationAddress,
     deployerAddress,
     deploymentTxHash: deployTxHash,
     deploymentBlock: deploymentBlock,
     deployedAt,
+    forwarderAddress: FORWARDER_ADDRESS,
+    forwarderDomainName: "ComSCiForwarder",
+    forwarderDomainVersion: "1",
+    forwarderAbi: forwarderArtifact.abi,
     abi,
   };
 
-  const outputDir = path.join(
-    __dirname,
-    "..",
-    "frontend",
-    "src",
-    "config"
-  );
+  const outputDir = path.join(__dirname, "..", "frontend", "src", "config");
 
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
@@ -103,17 +122,18 @@ async function main() {
   fs.writeFileSync(outputPath, JSON.stringify(contractData, null, 2));
   console.log(`✅ contractData.json guardado en: ${outputPath}\n`);
 
-  // ── 6. Resumen en consola ─────────────────────────────────
+  // ── 4. Resumen ────────────────────────────────────────────
   const explorerBase =
     chainId === 11155111
       ? "https://sepolia.etherscan.io"
       : "https://etherscan.io";
 
   console.log("═══════════════════════════════════════════════════════");
-  console.log("  ✅  DESPLIEGUE EXITOSO");
+  console.log("  ✅  DESPLIEGUE EXITOSO (NUEVO PROXY)");
   console.log("═══════════════════════════════════════════════════════");
   console.log(`  Proxy:            ${proxyAddress}`);
   console.log(`  Implementación:   ${implementationAddress}`);
+  console.log(`  Forwarder:        ${FORWARDER_ADDRESS}`);
   console.log(`  Deployer:         ${deployerAddress}`);
   console.log(`  Tx Hash:          ${deployTxHash}`);
   console.log(`  Bloque:           ${deploymentBlock}`);

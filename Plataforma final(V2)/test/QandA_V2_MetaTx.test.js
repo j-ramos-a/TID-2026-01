@@ -19,7 +19,7 @@ describe("QandA_platform_V2 + ERC2771Forwarder (Meta-Transacciones)", function (
     await proxy.waitForDeployment();
 
     // Crear una pregunta en V1 para verificar persistencia tras upgrade
-    await proxy.connect(user1).askQuestion("Pregunta V1", "Contenido V1");
+    await proxy.connect(user1).askQuestion("Pregunta V1", "Contenido V1", 0);
 
     // 2. Desplegar Forwarder
     const ForwarderFactory = await ethers.getContractFactory("ComSCiForwarder");
@@ -79,7 +79,7 @@ describe("QandA_platform_V2 + ERC2771Forwarder (Meta-Transacciones)", function (
   });
 
   it("Debe permitir llamadas directas tradicionales desde el usuario", async function () {
-    await proxy.connect(user2).askQuestion("Pregunta directa", "Contenido directo");
+    await proxy.connect(user2).askQuestion("Pregunta directa", "Contenido directo", 0);
     const q2 = await proxy.getQuestion(2);
     expect(q2.author).to.equal(await user2.getAddress());
     expect(q2.title).to.equal("Pregunta directa");
@@ -92,6 +92,7 @@ describe("QandA_platform_V2 + ERC2771Forwarder (Meta-Transacciones)", function (
     const data = proxy.interface.encodeFunctionData("askQuestion", [
       "¿Cómo funciona EIP-2771?",
       "Pregunta patrocinada por el relayer sin gas",
+      0,
     ]);
 
     const nonce = await forwarder.nonces(user2Address);
@@ -130,6 +131,7 @@ describe("QandA_platform_V2 + ERC2771Forwarder (Meta-Transacciones)", function (
     expect(q2.author).to.equal(user2Address);
     expect(q2.title).to.equal("¿Cómo funciona EIP-2771?");
     expect(q2.content).to.equal("Pregunta patrocinada por el relayer sin gas");
+    expect(Number(q2.category)).to.equal(0);
   });
 
   it("Debe ejecutar meta-transacción answerQuestion y voteAnswer gasless", async function () {

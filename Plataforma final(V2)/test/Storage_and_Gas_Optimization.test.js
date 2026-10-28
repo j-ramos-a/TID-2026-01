@@ -35,7 +35,7 @@ describe("Auditoría de Storage Layout y Optimización de Gas", function () {
     const proxyAddress = await proxy.getAddress();
 
     // Crear preguntas y respuestas en V1
-    await proxy.connect(user1).askQuestion("Pregunta inicial V1", "Texto en V1");
+    await proxy.connect(user1).askQuestion("Pregunta inicial V1", "Texto en V1", 0);
     await proxy.connect(user2).answerQuestion(1, "Respuesta inicial V1");
     await proxy.connect(user1).voteAnswer(1, 1); // like
 
@@ -73,12 +73,12 @@ describe("Auditoría de Storage Layout y Optimización de Gas", function () {
     const ipfsCid = "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi";
 
     // Medir gas con texto largo on-chain
-    const txLong = await proxy.connect(user1).askQuestion(title, longText);
+    const txLong = await proxy.connect(user1).askQuestion(title, longText, 0);
     const receiptLong = await txLong.wait();
     const gasLongText = receiptLong.gasUsed;
 
     // Medir gas con CID de IPFS
-    const txIpfs = await proxy.connect(user1).askQuestion(title, ipfsCid);
+    const txIpfs = await proxy.connect(user1).askQuestion(title, ipfsCid, 0);
     const receiptIpfs = await txIpfs.wait();
     const gasIpfs = receiptIpfs.gasUsed;
 
