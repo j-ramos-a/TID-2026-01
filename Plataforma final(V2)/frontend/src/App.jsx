@@ -33,12 +33,12 @@ export default function App() {
 
           <div className="flex items-center gap-3">
             <a
-              href="https://sepolia.etherscan.io/address/0x8c5d1992b32De4935dCB42b65C64b335c706ED47"
+              href="https://sepolia.etherscan.io/address/0x5Ef236865697DFa5c9979bdB8e7a53c04976a077"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 hover:border-slate-700 transition-colors"
             >
-              <span className="font-mono">Proxy: 0x8c5d...ED47</span>
+              <span className="font-mono">Proxy: 0x5Ef2...a077</span>
               <ExternalLink size={11} />
             </a>
           </div>

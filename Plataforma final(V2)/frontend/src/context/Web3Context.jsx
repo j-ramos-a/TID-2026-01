@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import contractData from '../config/contractData.json';
 
 const SEPOLIA_CHAIN_ID = '0xaa36a7'; // 11155111
-const SEPOLIA_RPC = 'https://rpc.sepolia.org';
+const SEPOLIA_RPC = 'https://ethereum-sepolia-rpc.publicnode.com';
 
 const Web3Context = createContext(null);
 
@@ -77,7 +77,7 @@ export function Web3Provider({ children }) {
               chainId: SEPOLIA_CHAIN_ID,
               chainName: 'Sepolia Testnet',
               nativeCurrency: { name: 'SepoliaETH', symbol: 'ETH', decimals: 18 },
-              rpcUrls: ['https://rpc.sepolia.org'],
+              rpcUrls: ['https://ethereum-sepolia-rpc.publicnode.com'],
               blockExplorerUrls: ['https://sepolia.etherscan.io'],
             }],
           });
