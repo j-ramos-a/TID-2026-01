@@ -5,109 +5,92 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-slate-800/60;
-  }
-  html {
-    scroll-behavior: smooth;
-    color-scheme: dark;
-  }
-  body {
-    @apply antialiased bg-slate-950 text-slate-200;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  }
-  ::selection {
-    @apply bg-indigo-500/30 text-white;
-  }
-  ::-webkit-scrollbar {
-    @apply w-1.5;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-slate-800 rounded-full;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-700;
-  }
+ * {
+ @apply border-white/10;
+ }
+ html {
+ scroll-behavior: smooth;
+ color-scheme: dark;
+ }
+ body {
+ @apply antialiased bg-[#0A0A0A] text-neutral-200;
+ font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+ }
+ ::selection {
+ @apply bg-white/20 text-white;
+ }
+ ::-webkit-scrollbar {
+ @apply w-1.5;
+ }
+ ::-webkit-scrollbar-track {
+ @apply bg-transparent;
+ }
+ ::-webkit-scrollbar-thumb {
+ @apply bg-[#222222] rounded-full;
+ }
+ ::-webkit-scrollbar-thumb:hover {
+ @apply bg-[#333333];
+ }
 }
 
 @layer components {
-  /* ── Botones ─────────────────────────────── */
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5
-           bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700
-           text-white font-medium text-sm rounded-xl
-           transition-all duration-200 ease-out
-           shadow-lg shadow-indigo-600/25 hover:shadow-indigo-500/35
-           disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none
-           focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-slate-950;
-  }
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5
-           bg-slate-900 hover:bg-slate-800
-           text-slate-200 font-medium text-sm rounded-xl
-           border border-slate-800 hover:border-slate-700
-           transition-all duration-200
-           disabled:opacity-40 disabled:cursor-not-allowed
-           focus:outline-none focus:ring-2 focus:ring-slate-700/50;
-  }
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm
-           text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]
-           rounded-xl transition-all duration-200
-           disabled:opacity-30 disabled:cursor-not-allowed;
-  }
+ /* ── Botones ─────────────────────────────── */
+ .btn-primary {
+ @apply inline-flex items-center justify-center gap-2 px-4 py-2
+ bg-white hover:bg-neutral-200 active:bg-neutral-300
+ text-black font-medium text-sm rounded-md
+ transition-colors duration-150
+ disabled:opacity-40 disabled:cursor-not-allowed
+ focus:outline-none focus:ring-1 focus:ring-white/30;
+ }
+ .btn-secondary {
+ @apply inline-flex items-center justify-center gap-2 px-4 py-2
+ bg-[#141414] hover:bg-[#1E1E1E]
+ text-neutral-200 font-medium text-sm rounded-md
+ border border-white/10 hover:border-white/20
+ transition-colors duration-150
+ disabled:opacity-40 disabled:cursor-not-allowed;
+ }
+ .btn-ghost {
+ @apply inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm
+ text-neutral-400 hover:text-white hover:bg-white/5
+ rounded-md transition-colors duration-150
+ disabled:opacity-30 disabled:cursor-not-allowed;
+ }
 
-  /* ── Tarjetas con glassmorphism ──────────── */
-  .glass-card {
-    @apply relative bg-slate-900/60 backdrop-blur-md
-           border border-slate-800/80 rounded-2xl
-           transition-all duration-300;
-  }
-  .glass-card-hover {
-    @apply glass-card
-           hover:border-slate-700 hover:bg-slate-900/80
-           hover:shadow-xl hover:shadow-black/40;
-  }
+ /* ── Tarjetas ────────────────────────────── */
+ .glass-card {
+ @apply relative bg-[#141414]
+ border border-white/10 rounded-md
+ transition-colors duration-150;
+ }
+ .glass-card-hover {
+ @apply glass-card hover:bg-[#1A1A1A] hover:border-white/20;
+ }
 
-  /* ── Inputs ──────────────────────────────── */
-  .input-dark {
-    @apply w-full px-4 py-3 bg-slate-950/60
-           border border-slate-800/80 rounded-xl
-           text-slate-100 placeholder-slate-600
-           transition-all duration-200
-           focus:outline-none focus:border-indigo-500/60
-           focus:ring-2 focus:ring-indigo-500/20 focus:bg-slate-950/80
-           disabled:opacity-40 disabled:cursor-not-allowed;
-  }
-  .textarea-dark {
-    @apply input-dark resize-none leading-relaxed;
-  }
+ /* ── Inputs ──────────────────────────────── */
+ .input-dark {
+ @apply w-full px-3 py-2 bg-[#0A0A0A]
+ border border-white/10 rounded-md
+ text-white placeholder-neutral-600
+ transition-colors duration-150
+ focus:outline-none focus:border-white/30
+ focus:ring-1 focus:ring-white/20
+ disabled:opacity-40 disabled:cursor-not-allowed;
+ }
+ .textarea-dark {
+ @apply input-dark resize-none leading-relaxed;
+ }
 
-  /* ── Badges ──────────────────────────────── */
-  .badge-net {
-    @apply inline-flex items-center gap-1.5 px-3 py-1
-           text-xs font-medium rounded-full
-           bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
-  }
-  .badge-count {
-    @apply inline-flex items-center gap-1 px-2.5 py-0.5
-           text-xs font-medium rounded-lg
-           bg-indigo-500/10 text-indigo-300 border border-indigo-500/20;
-  }
-
-  /* ── Dot pulsante ────────────────────────── */
-  .dot-live {
-    @apply relative flex h-2 w-2;
-  }
-  .dot-live::before {
-    content: '';
-    @apply absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping;
-  }
-  .dot-live::after {
-    content: '';
-    @apply relative inline-flex h-2 w-2 rounded-full bg-emerald-500;
-  }
+ /* ── Badges ──────────────────────────────── */
+ .badge-net {
+ @apply inline-flex items-center gap-1.5 px-2.5 py-1
+ text-xs font-medium rounded-sm
+ bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+ }
+ .badge-count {
+ @apply inline-flex items-center gap-1 px-2 py-0.5
+ text-xs font-medium rounded-sm
+ bg-white/5 text-neutral-300 border border-white/10 font-mono;
+ }
 }

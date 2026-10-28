@@ -5,231 +5,231 @@ import { useContract } from '../hooks/useContract';
 import TxStatus from './TxStatus';
 
 export default function AskModal({ onClose, onSuccess }) {
-  const { account } = useWeb3();
-  const { askQuestion, txStatus, txError, txInfo, resetTx, hasForwarder } = useContract();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [category, setCategory] = useState(null);
-  const [errors, setErrors] = useState({});
+ const { account } = useWeb3();
+ const { askQuestion, txStatus, txError, txInfo, resetTx, hasForwarder } = useContract();
+ const [title, setTitle] = useState('');
+ const [content, setContent] = useState('');
+ const [category, setCategory] = useState(null);
+ const [errors, setErrors] = useState({});
 
-  const CATEGORIES = [
-    { value: 0, label: 'Cálculo' },
-    { value: 1, label: 'Álgebra' },
-    { value: 2, label: 'Programación' },
-    { value: 3, label: 'Core' },
-    { value: 4, label: 'Otros' },
-  ];
+ const CATEGORIES = [
+ { value: 0, label: 'Cálculo' },
+ { value: 1, label: 'Álgebra' },
+ { value: 2, label: 'Programación' },
+ { value: 3, label: 'Core' },
+ { value: 4, label: 'Otros' },
+ ];
 
-  const validate = () => {
-    const e = {};
-    if (!title.trim()) e.title = 'El título es obligatorio.';
-    if (!content.trim()) e.content = 'El contenido es obligatorio.';
-    if (category === null) e.category = 'Selecciona una categoría.';
-    if (title.trim().length > 200) e.title = 'Máximo 200 caracteres.';
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
+ const validate = () => {
+ const e = {};
+ if (!title.trim()) e.title = 'El título es obligatorio.';
+ if (!content.trim()) e.content = 'El contenido es obligatorio.';
+ if (category === null) e.category = 'Selecciona una categoría.';
+ if (title.trim().length > 200) e.title = 'Máximo 200 caracteres.';
+ setErrors(e);
+ return Object.keys(e).length === 0;
+ };
 
-  const handleClose = () => {
-    resetTx();
-    onClose();
-  };
+ const handleClose = () => {
+ resetTx();
+ onClose();
+ };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+ const handleSubmit = async (e) => {
+ e.preventDefault();
+ if (!validate()) return;
 
-    try {
-      await askQuestion(title.trim(), content.trim(), category);
-      onSuccess?.();
-    } catch {
-      // Error manejado por txStatus/txError
-    }
-  };
+ try {
+ await askQuestion(title.trim(), content.trim(), category);
+ onSuccess?.();
+ } catch {
+ // Error manejado por txStatus/txError
+ }
+ };
 
-  const isSubmitting =
-    txStatus === 'signing' || txStatus === 'relaying' || txStatus === 'confirming';
-  const isLocked = isSubmitting || txStatus === 'success';
+ const isSubmitting =
+ txStatus === 'signing' || txStatus === 'relaying' || txStatus === 'confirming';
+ const isLocked = isSubmitting || txStatus === 'success';
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={!isSubmitting ? handleClose : undefined}
-      />
+ return (
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
+ <div
+ className="absolute inset-0 bg-black/60 "
+ onClick={!isSubmitting ? handleClose : undefined}
+ />
 
-      <div className="relative glass-card w-full max-w-xl z-10 animate-slide-up overflow-hidden">
-        {/* Línea de acento superior */}
-        <div className="h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+ <div className="relative glass-card w-full max-w-xl z-10 animate-slide-up overflow-hidden">
+ {/* Línea de acento superior */}
+ <div className="h-px bg-gradient-to-r from-transparent via-neutral-500/50 to-transparent" />
 
-        <div className="p-6">
-          <button
-            onClick={handleClose}
-            disabled={isSubmitting}
-            className="absolute top-5 right-5 text-slate-600 hover:text-slate-300 transition-colors disabled:opacity-30"
-          >
-            <X size={18} />
-          </button>
+ <div className="p-6">
+ <button
+ onClick={handleClose}
+ disabled={isSubmitting}
+ className="absolute top-5 right-5 text-neutral-600 hover:text-neutral-300 transition-colors disabled:opacity-30"
+ >
+ <X size={18} />
+ </button>
 
-          {/* Encabezado */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-600/15 text-indigo-400">
-              <Terminal size={20} />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-white">Nueva Consulta</h2>
-              <p className="text-xs text-slate-500">Se publicará on-chain en Sepolia</p>
-            </div>
-          </div>
+ {/* Encabezado */}
+ <div className="flex items-center gap-3 mb-5">
+ <div className="flex items-center justify-center w-10 h-10 rounded-md bg-neutral-600/15 text-neutral-400">
+ <Terminal size={20} />
+ </div>
+ <div>
+ <h2 className="text-lg font-bold text-white">Nueva Consulta</h2>
+ <p className="text-xs text-neutral-500">Se publicará on-chain en Sepolia</p>
+ </div>
+ </div>
 
-          {/* Aviso visual de Meta-Transacción 0 Gas */}
-          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-5">
-            <Sparkles size={15} className="flex-shrink-0" />
-            <span>
-              <strong>Firma gratuita (0 Gas):</strong> Tu transacción será patrocinada por el Relayer. Solo firmas un mensaje EIP-712 sin pagar comisiones.
-            </span>
-          </div>
+ {/* Aviso visual de Meta-Transacción 0 Gas */}
+ <div className="flex items-center gap-2 px-3 py-2.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-5">
+ <Sparkles size={15} className="flex-shrink-0" />
+ <span>
+ <strong>Firma gratuita (0 Gas):</strong> Tu transacción será patrocinada por el Relayer. Solo firmas un mensaje EIP-712 sin pagar comisiones.
+ </span>
+ </div>
 
-          {!account ? (
-            <div className="p-4 rounded-xl bg-amber-500/[0.06] border border-amber-500/20 text-amber-300 text-sm">
-              Conecta tu wallet para publicar una consulta.
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Título */}
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Título</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                    setErrors((p) => ({ ...p, title: undefined }));
-                  }}
-                  placeholder="¿Cuál es tu consulta?"
-                  className={`input-dark ${
-                    errors.title
-                      ? 'border-rose-500/50 focus:border-rose-500/50 focus:ring-rose-500/20'
-                      : ''
-                  }`}
-                  disabled={isLocked}
-                  maxLength={200}
-                />
-                <div className="flex items-center justify-between mt-1.5">
-                  {errors.title ? (
-                    <p className="text-rose-400 text-xs">{errors.title}</p>
-                  ) : (
-                    <span />
-                  )}
-                  <span className="text-xs text-slate-600">{title.length}/200</span>
-                </div>
-              </div>
+ {!account ? (
+ <div className="p-4 rounded-md bg-amber-500/[0.06] border border-amber-500/20 text-amber-300 text-sm">
+ Conecta tu wallet para publicar una consulta.
+ </div>
+ ) : (
+ <form onSubmit={handleSubmit} className="space-y-5">
+ {/* Título */}
+ <div>
+ <label className="block text-sm font-medium text-neutral-300 mb-2">Título</label>
+ <input
+ type="text"
+ value={title}
+ onChange={(e) => {
+ setTitle(e.target.value);
+ setErrors((p) => ({ ...p, title: undefined }));
+ }}
+ placeholder="¿Cuál es tu consulta?"
+ className={`input-dark ${
+ errors.title
+ ? 'border-rose-500/50 focus:border-rose-500/50 focus:ring-rose-500/20'
+ : ''
+ }`}
+ disabled={isLocked}
+ maxLength={200}
+ />
+ <div className="flex items-center justify-between mt-1.5">
+ {errors.title ? (
+ <p className="text-rose-400 text-xs">{errors.title}</p>
+ ) : (
+ <span />
+ )}
+ <span className="text-xs text-neutral-600">{title.length}/200</span>
+ </div>
+ </div>
 
-              {/* Categoría */}
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Categoría</label>
-                <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.value}
-                      type="button"
-                      disabled={isLocked}
-                      onClick={() => {
-                        setCategory(cat.value);
-                        setErrors((p) => ({ ...p, category: undefined }));
-                      }}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                        category === cat.value
-                          ? 'bg-indigo-600 text-white border-indigo-500'
-                          : 'bg-slate-800/60 text-slate-300 border-slate-700/60 hover:border-indigo-500/40'
-                      } disabled:opacity-40`}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
-                </div>
-                {errors.category && (
-                  <p className="text-rose-400 text-xs mt-1.5">{errors.category}</p>
-                )}
-              </div>
+ {/* Categoría */}
+ <div>
+ <label className="block text-sm font-medium text-neutral-300 mb-2">Categoría</label>
+ <div className="flex flex-wrap gap-2">
+ {CATEGORIES.map((cat) => (
+ <button
+ key={cat.value}
+ type="button"
+ disabled={isLocked}
+ onClick={() => {
+ setCategory(cat.value);
+ setErrors((p) => ({ ...p, category: undefined }));
+ }}
+ className={`px-3 py-1.5 rounded-sm text-xs font-medium border transition-all ${
+ category === cat.value
+ ? 'bg-neutral-600 text-white border-neutral-500'
+ : 'bg-neutral-800/60 text-neutral-300 border-neutral-700/60 hover:border-neutral-500/40'
+ } disabled:opacity-40`}
+ >
+ {cat.label}
+ </button>
+ ))}
+ </div>
+ {errors.category && (
+ <p className="text-rose-400 text-xs mt-1.5">{errors.category}</p>
+ )}
+ </div>
 
-              {/* Contenido */}
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
-                <textarea
-                  value={content}
-                  onChange={(e) => {
-                    setContent(e.target.value);
-                    setErrors((p) => ({ ...p, content: undefined }));
-                  }}
-                  placeholder="Describe tu consulta con detalle..."
-                  rows={5}
-                  className={`textarea-dark ${
-                    errors.content
-                      ? 'border-rose-500/50 focus:border-rose-500/50 focus:ring-rose-500/20'
-                      : ''
-                  }`}
-                  disabled={isLocked}
-                />
-                <div className="flex flex-wrap items-center justify-between gap-1.5 mt-2">
-                  {content.trim().length >= 100 ? (
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-950/60 border border-cyan-800/60 text-cyan-300 text-xs font-medium animate-fade-in">
-                      <Zap size={12} className="text-cyan-400 fill-cyan-400" />
-                      <span>Optimización IPFS: <strong>~82% ahorro en Gas</strong> (On-chain CIDv1)</span>
-                    </div>
-                  ) : (
-                    <div className="text-xs text-slate-500">
-                      {content.trim().length > 0 ? (
-                        <span>{100 - content.trim().length} caracteres más para optimización IPFS</span>
-                      ) : (
-                        <span>Textos &gt;100 caracteres se optimizan off-chain en IPFS</span>
-                      )}
-                    </div>
-                  )}
-                  <span className="text-xs font-mono text-slate-500">
-                    {content.length} caracteres
-                  </span>
-                </div>
-                {errors.content && (
-                  <p className="text-rose-400 text-xs mt-1.5">{errors.content}</p>
-                )}
-              </div>
+ {/* Contenido */}
+ <div>
+ <label className="block text-sm font-medium text-neutral-300 mb-2">Descripción</label>
+ <textarea
+ value={content}
+ onChange={(e) => {
+ setContent(e.target.value);
+ setErrors((p) => ({ ...p, content: undefined }));
+ }}
+ placeholder="Describe tu consulta con detalle..."
+ rows={5}
+ className={`textarea-dark ${
+ errors.content
+ ? 'border-rose-500/50 focus:border-rose-500/50 focus:ring-rose-500/20'
+ : ''
+ }`}
+ disabled={isLocked}
+ />
+ <div className="flex flex-wrap items-center justify-between gap-1.5 mt-2">
+ {content.trim().length >= 100 ? (
+ <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-950/60 border border-neutral-800/60 text-neutral-300 text-xs font-medium animate-fade-in">
+ <Zap size={12} className="text-neutral-400 fill-neutral-400" />
+ <span>Optimización IPFS: <strong>~82% ahorro en Gas</strong> (On-chain CIDv1)</span>
+ </div>
+ ) : (
+ <div className="text-xs text-neutral-500">
+ {content.trim().length > 0 ? (
+ <span>{100 - content.trim().length} caracteres más para optimización IPFS</span>
+ ) : (
+ <span>Textos &gt;100 caracteres se optimizan off-chain en IPFS</span>
+ )}
+ </div>
+ )}
+ <span className="text-xs font-mono text-neutral-500">
+ {content.length} caracteres
+ </span>
+ </div>
+ {errors.content && (
+ <p className="text-rose-400 text-xs mt-1.5">{errors.content}</p>
+ )}
+ </div>
 
-              <TxStatus txStatus={txStatus} txError={txError} txInfo={txInfo} onDismiss={resetTx} />
+ <TxStatus txStatus={txStatus} txError={txError} txInfo={txInfo} onDismiss={resetTx} />
 
-              {/* Acciones */}
-              <div className="flex justify-end gap-3 pt-1">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  disabled={isSubmitting}
-                  className="btn-ghost text-slate-400"
-                >
-                  {txStatus === 'success' ? 'Cerrar' : 'Cancelar'}
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting || txStatus === 'success'}
-                  className="btn-primary"
-                >
-                  <Send size={15} />
-                  <span>
-                    {isSubmitting
-                      ? txStatus === 'relaying'
-                        ? 'Patrocinando en Sepolia...'
-                        : txStatus === 'confirming'
-                        ? 'Validando bloque...'
-                        : 'Firmando (0 Gas)...'
-                      : txStatus === 'success'
-                      ? 'Publicada con éxito'
-                      : 'Publicar Consulta (0 Gas)'}
-                  </span>
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+ {/* Acciones */}
+ <div className="flex justify-end gap-3 pt-1">
+ <button
+ type="button"
+ onClick={handleClose}
+ disabled={isSubmitting}
+ className="btn-ghost text-neutral-400"
+ >
+ {txStatus === 'success' ? 'Cerrar' : 'Cancelar'}
+ </button>
+ <button
+ type="submit"
+ disabled={isSubmitting || txStatus === 'success'}
+ className="btn-primary"
+ >
+ <Send size={15} />
+ <span>
+ {isSubmitting
+ ? txStatus === 'relaying'
+ ? 'Patrocinando en Sepolia...'
+ : txStatus === 'confirming'
+ ? 'Validando bloque...'
+ : 'Firmando (0 Gas)...'
+ : txStatus === 'success'
+ ? 'Publicada con éxito'
+ : 'Publicar Consulta (0 Gas)'}
+ </span>
+ </button>
+ </div>
+ </form>
+ )}
+ </div>
+ </div>
+ </div>
+ );
 }
