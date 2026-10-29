@@ -85,7 +85,7 @@ export default function QuestionList() {
  <span>Smart Contract UUPS en Sepolia</span>
  </div>
  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
- Consultas ComSCi
+ Consultas Ing.Computer
  </h1>
  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed">
  Comunidad descentralizada de dudas y código sobre Ethereum Sepolia. Pregunta, responde y acumula reputación on-chain.

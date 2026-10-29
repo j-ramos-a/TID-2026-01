@@ -24,7 +24,7 @@ export default function Navbar() {
  </div>
  <div className="flex items-center gap-2">
  <span className="font-bold text-base text-white tracking-tight">
- Consultas ComSCi
+ Consultas Ing.Computer
  </span>
  <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-neutral-400">
  v1.0

@@ -26,7 +26,7 @@ export default function App() {
  <div className="w-5 h-5 rounded-md bg-neutral-600/20 text-neutral-400 flex items-center justify-center">
  <Terminal size={12} />
  </div>
- <span className="font-semibold text-neutral-300">Consultas ComSCi</span>
+ <span className="font-semibold text-neutral-300">Consultas Ing.Computer</span>
  <span className="text-neutral-600">•</span>
  <span>Comunidad descentralizada sobre Ethereum Sepolia</span>
  </div>
